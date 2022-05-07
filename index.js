@@ -19,7 +19,7 @@ async function run() {
         await client.connect();
         const itemCollection = client.db('handset-store').collection('item');
 
-        app.get('/item', async (req, res) => {
+        app.get('/items', async (req, res) => {
             const query = {};
             const cursor = itemCollection.find(query);
             const items = await cursor.toArray();
@@ -27,13 +27,22 @@ async function run() {
 
         });
 
+        //show specific item
         app.get('/item/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const item = await itemCollection.findOne(query);
             res.send(item);
         });
+
+        //add new item
+        app.post('/item', async (req, res) => {
+            const newItem = req.body;
+            const result = await itemCollection.insertOne(newItem);
+            res.send(result);
+        });
     }
+
     finally {
 
     }
